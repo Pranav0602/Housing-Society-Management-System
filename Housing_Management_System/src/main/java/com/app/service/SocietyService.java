@@ -8,7 +8,7 @@ public interface SocietyService {
 	
 public List<Society> getSocietylist();
 	
-	public void addSocietyByname(String name);
+	public void addSociety(Society society);
 	
 	public Society getSociety(int id);
 	

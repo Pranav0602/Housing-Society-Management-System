@@ -8,7 +8,7 @@ public interface VisitorService {
 	
 public List<Visitor> getVisitorlist();
 	
-	public void addVisitorByname(String name);
+	public void addVisitor(Visitor visit);
 	
 	public Visitor getVisitor(int id);
 	

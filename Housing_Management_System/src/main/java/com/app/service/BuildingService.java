@@ -8,7 +8,7 @@ public interface BuildingService {
 	
 	public List<Building> getBuildinglist();
 	
-	public void addBuildingByname(String name);
+	public void addBuilding(Building building);
 	
 	public Building getBuilding(int id);
 	

@@ -8,7 +8,7 @@ public interface FlatMemberService {
 	
 public List<FlatMember> getFlatMemberlist();
 	
-	public void addFlatMemberByname(String name);
+	public void addFlatMember(FlatMember member);
 	
 	public FlatMember getFlatMember(int id);
 	

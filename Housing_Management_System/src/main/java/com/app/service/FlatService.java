@@ -8,7 +8,7 @@ public interface FlatService {
 	
 public List<Flat> getFlatlist();
 	
-	public void addFlatByname(int Flatnumber);
+	public void addFlat(Flat flat);
 	
 	public Flat getFlat(int id);
 	
