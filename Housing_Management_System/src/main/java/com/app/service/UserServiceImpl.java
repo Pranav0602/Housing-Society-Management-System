@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.app.dao.UserDao;
 import com.app.model.User;
+import com.app.model.UserRole;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -51,5 +52,10 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		UserRepository.deleteById(id);
 	}
-
+	public List<User> findBySocietyId(long id){
+		return UserRepository.findUsersBySocietyId(id);
+	}
+	public List<User> findByRole(UserRole role){
+		return UserRepository.findUserByRole(role);
+	}
 }
