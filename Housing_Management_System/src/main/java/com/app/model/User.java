@@ -21,7 +21,7 @@ public class User {
     @Column(nullable = false)
     private String phone;
     
-    @ElementCollection(fetch = FetchType.EAGER)
+    //@ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     private UserRole role;
     
