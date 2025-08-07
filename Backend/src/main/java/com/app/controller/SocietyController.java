@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.app.dto.SocietyCreationRequest;
 import com.app.dto.SocietyDTO;
+import com.app.model.Society;
 import com.app.model.User;
 import com.app.model.UserRole;
 import com.app.service.SocietyService;
@@ -45,8 +47,8 @@ public class SocietyController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SocietyDTO> createSociety(@Valid @RequestBody SocietyDTO societyDto) {
-        SocietyDTO createdSociety = societyService.updateSociety(null, societyDto);
+    public ResponseEntity<Society> createSociety(@Valid @RequestBody SocietyCreationRequest societyrequest) {
+    	Society createdSociety = societyService.createSociety(societyrequest);
         return new ResponseEntity<>(createdSociety, HttpStatus.CREATED);
     }
 

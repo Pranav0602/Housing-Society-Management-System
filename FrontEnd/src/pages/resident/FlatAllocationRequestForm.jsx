@@ -41,7 +41,6 @@ const FlatAllocationRequestForm = () => {
       try {
         setLoading(true);
         
-        // Check if user already has a flat
         const hasFlat = await checkFlatAllocation();
         if (hasFlat) {
           toast.info('You already have an allocated flat.');
@@ -49,9 +48,10 @@ const FlatAllocationRequestForm = () => {
           return;
         }
         
-        // Check if user has pending allocation request
-        const response = await flatService.getAllFlats();
-        const pendingAllocation = response.data.find(
+        const response = await flatService.getFlatsBySociety(currentUser.societyId);
+        const allFlats = response.data;
+
+        const pendingAllocation = allFlats.find(
           flat => flat.allocationRequests && flat.allocationRequests.some(
             req => req.userId === currentUser.id
           )
@@ -66,7 +66,6 @@ const FlatAllocationRequestForm = () => {
           setAllocationStatus('NOT_REQUESTED');
         }
         
-        // Fetch buildings
         await fetchBuildings();
       } catch (error) {
         console.error('Error checking allocation status:', error);
@@ -81,6 +80,7 @@ const FlatAllocationRequestForm = () => {
   }, [currentUser, navigate]);
 
   const fetchBuildings = async () => {
+    console.log('Fetching buildings for society:', currentUser.societyId);
     if (!currentUser || !currentUser.societyId) return;
     
     try {
@@ -94,6 +94,7 @@ const FlatAllocationRequestForm = () => {
 
   useEffect(() => {
     const fetchAvailableFlats = async () => {
+      console.log('Fetching available flats for building:', selectedBuilding);
       if (!selectedBuilding) {
         setAvailableFlats([]);
         return;
@@ -101,8 +102,8 @@ const FlatAllocationRequestForm = () => {
       
       try {
         setLoading(true);
+        // This remains correct, as it fetches flats for a selected building
         const response = await flatService.getAllFlats(selectedBuilding);
-        // Filter only available flats
         const available = response.data.filter(flat => flat.occupiedStatus === 'VACANT');
         setAvailableFlats(available);
       } catch (error) {
@@ -118,21 +119,21 @@ const FlatAllocationRequestForm = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // Add user information
       const requestData = {
         ...values,
+        userId: currentUser.id,
         userName: currentUser.name,
         userEmail: currentUser.email
       };
       
       const response = await flatService.requestFlatAllocation(requestData);
       
-      // Send WebSocket notification to admin
       sendMessage('/app/flat-allocation-requests', {
         requestId: response.data.id,
         flatId: values.flatId,
         userName: currentUser.name,
-        userEmail: currentUser.email
+        userEmail: currentUser.email,
+        societyId: currentUser.societyId
       });
       
       toast.success('Flat allocation request submitted successfully. Waiting for admin approval.');
@@ -145,6 +146,8 @@ const FlatAllocationRequestForm = () => {
       setSubmitting(false);
     }
   };
+  
+  // The rest of the component remains the same...
 
   if (loading) {
     return (
@@ -154,7 +157,6 @@ const FlatAllocationRequestForm = () => {
     );
   }
 
-  // If user already has a pending request
   if (allocationStatus === 'PENDING') {
     return (
       <div className="space-y-6">
@@ -189,7 +191,6 @@ const FlatAllocationRequestForm = () => {
     );
   }
 
-  // If user's previous request was rejected
   if (allocationStatus === 'REJECTED') {
     return (
       <div className="space-y-6">

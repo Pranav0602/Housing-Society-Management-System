@@ -67,18 +67,26 @@ export const buildingService = {
 
 // Flat services
 export const flatService = {
+  // Used by AdminFlats to get flats for a specific building
   getAllFlats: (buildingId) => api.get(`/flats/building/${buildingId}`),
+  // *** ADDED: Used by resident pages to get all flats in their society ***
+  getFlatsBySociety: (societyId) => api.get(`/flats/society/${societyId}`),
   getFlatById: (id) => api.get(`/flats/${id}`),
   createFlat: (flatData) => api.post('/flats', flatData),
   updateFlat: (id, flatData) => api.put(`/flats/${id}`, flatData),
   deleteFlat: (id) => api.delete(`/flats/${id}`),
   getMyFlat: () => api.get('/flats/my-flat'),
   requestFlatAllocation: (requestData) => api.post('/flats/allocation-requests', requestData),
+  // *** ADDED: Required for AdminAllocationRequests page ***
+  getAllFlatAllocationRequests: (societyId) => api.get(`/flat-allocation-requests/society/${societyId}`),
+  approveAllocationRequest: (requestId) => api.put(`/flat-allocation-requests/${requestId}/approve`),
+  rejectAllocationRequest: (requestId) => api.put(`/flat-allocation-requests/${requestId}/reject`),
 };
 
 // Flat member services
 export const flatMemberService = {
-  getAllFlatMembers: (flatId) => api.get(`/flat-members`),
+  // *** CORRECTED: Was missing the /flat/{flatId} part ***
+  getAllFlatMembers: (flatId) => api.get(`/flat-members/flat/${flatId}`),
   getFlatMemberById: (id) => api.get(`/flat-members/${id}`),
   createFlatMember: (memberData) => api.post('/flat-members', memberData),
   updateFlatMember: (id, memberData) => api.put(`/flat-members/${id}`, memberData),
@@ -98,7 +106,11 @@ export const complaintService = {
 export const maintenanceBillService = {
   getAllBills: () => api.get('/maintenance-bills'),
   getBillById: (id) => api.get(`/maintenance-bills/${id}`),
-  payBill: (id, paymentData) => api.post(`/maintenance-bills/${id}/pay`, paymentData),
+  // *** ADDED: Missing functions for bill management ***
+  createBill: (billData) => api.post('/maintenance-bills', billData),
+  updateBill: (id, billData) => api.put(`/maintenance-bills/${id}`, billData),
+  deleteBill: (id) => api.delete(`/maintenance-bills/${id}`),
+  markBillAsPaid: (id, paymentData) => api.post(`/maintenance-bills/${id}/pay`, paymentData),
 };
 
 // Notice services

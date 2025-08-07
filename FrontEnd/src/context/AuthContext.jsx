@@ -38,10 +38,15 @@ export const AuthProvider = ({ children }) => {
 
     try {
       const response = await flatService.getMyFlat();
-      const hasFlat = response.data && response.data.id;
+      const hasFlat = !!(response.data && response.data.id);
       setHasAllocatedFlat(hasFlat);
       return hasFlat;
     } catch (error) {
+      // Specifically handle 404 for residents without a flat
+      if (error.response && error.response.status === 404) {
+        setHasAllocatedFlat(false);
+        return false;
+      }
       console.error('Error checking flat allocation:', error);
       setHasAllocatedFlat(false);
       return false;

@@ -19,7 +19,6 @@ public interface VisitorMapper {
     @Mapping(source = "loggedBy.name", target = "loggedByName")
     @Mapping(source = "approvedBy.id", target = "approvedById")
     @Mapping(source = "approvedBy.name", target = "approvedByName")
-	@Mapping(target = "approved", ignore = true)
     VisitorDTO toDTO(Visitor visitorLog);
     
     List<VisitorDTO> toDtoList(List<Visitor> visitors);
