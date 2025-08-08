@@ -1,6 +1,7 @@
 package com.app.dto;
 
 import com.app.model.FlatType;
+import com.app.model.OccupiedStatus;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -31,6 +32,6 @@ public class FlatDTO {
     private String ownerEmail;
     private String ownerPhone;
     private Integer totalMembers;
-//    private String occupiedStatus;
+    private OccupiedStatus occupiedStatus;
 }
 

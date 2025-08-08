@@ -77,6 +77,7 @@ public class FlatServiceImpl implements FlatService {
                 .flatType(flatDto.getFlatType())
                 .area(flatDto.getArea())
                 .building(building)
+                .occupiedStatus(flatDto.getOccupiedStatus())
                 .build();
 
         Flat savedFlat = flatRepository.save(flat);
@@ -100,6 +101,7 @@ public class FlatServiceImpl implements FlatService {
         flat.setFlatNumber(flatDto.getFlatNumber());
         flat.setFloorNumber(flatDto.getFloorNumber());
         flat.setBuilding(building);
+        flat.setOccupiedStatus(flatDto.getOccupiedStatus());
 
         Flat updatedFlat = flatRepository.save(flat);
         return flatMapper.toDTO(updatedFlat);

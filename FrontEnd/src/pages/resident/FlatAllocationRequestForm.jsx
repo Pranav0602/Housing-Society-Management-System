@@ -33,42 +33,41 @@ const FlatAllocationRequestForm = () => {
   const [buildings, setBuildings] = useState([]);
   const [availableFlats, setAvailableFlats] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Set initial loading to true
   const [allocationStatus, setAllocationStatus] = useState(null);
 
   useEffect(() => {
     const checkExistingAllocation = async () => {
       try {
-        setLoading(true);
-        
         const hasFlat = await checkFlatAllocation();
         if (hasFlat) {
           toast.info('You already have an allocated flat.');
           navigate('/resident/dashboard');
           return;
         }
-        
+
+        // CORRECTED: Use the right function to get all flats for the society
         const response = await flatService.getFlatsBySociety(currentUser.societyId);
         const allFlats = response.data;
-
+        
         const pendingAllocation = allFlats.find(
           flat => flat.allocationRequests && flat.allocationRequests.some(
-            req => req.userId === currentUser.id
+            req => req.userId === currentUser.id && req.status === 'PENDING'
           )
         );
         
         if (pendingAllocation) {
-          const request = pendingAllocation.allocationRequests.find(
-            req => req.userId === currentUser.id
-          );
-          setAllocationStatus(request.status);
+          setAllocationStatus('PENDING');
         } else {
           setAllocationStatus('NOT_REQUESTED');
         }
         
+        // This will now run correctly
         await fetchBuildings();
+
       } catch (error) {
         console.error('Error checking allocation status:', error);
+        toast.error('Could not load allocation details.');
       } finally {
         setLoading(false);
       }
@@ -77,12 +76,10 @@ const FlatAllocationRequestForm = () => {
     if (currentUser) {
       checkExistingAllocation();
     }
-  }, [currentUser, navigate]);
+  }, [currentUser, navigate, checkFlatAllocation]);
 
   const fetchBuildings = async () => {
-    console.log('Fetching buildings for society:', currentUser.societyId);
     if (!currentUser || !currentUser.societyId) return;
-    
     try {
       const response = await buildingService.getAllBuildings(currentUser.societyId);
       setBuildings(response.data);
@@ -94,7 +91,6 @@ const FlatAllocationRequestForm = () => {
 
   useEffect(() => {
     const fetchAvailableFlats = async () => {
-      console.log('Fetching available flats for building:', selectedBuilding);
       if (!selectedBuilding) {
         setAvailableFlats([]);
         return;
@@ -102,9 +98,11 @@ const FlatAllocationRequestForm = () => {
       
       try {
         setLoading(true);
-        // This remains correct, as it fetches flats for a selected building
-        const response = await flatService.getAllFlats(selectedBuilding);
-        const available = response.data.filter(flat => flat.occupiedStatus === 'VACANT');
+        // CORRECTED: Use the renamed, specific function
+        const response = await flatService.getFlatsByBuilding(selectedBuilding);
+        console.log('Available flats:', response.data);
+        const available = response.data.filter(flat => flat.occupiedStatus == 'VACANT' || flat.occupiedStatus == undefined);
+        console.log('Filtered available flats:', available);
         setAvailableFlats(available);
       } catch (error) {
         console.error('Failed to fetch flats:', error);
@@ -117,6 +115,8 @@ const FlatAllocationRequestForm = () => {
     fetchAvailableFlats();
   }, [selectedBuilding]);
 
+  // ... (the rest of your component remains the same)
+  
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const requestData = {
@@ -138,7 +138,6 @@ const FlatAllocationRequestForm = () => {
       
       toast.success('Flat allocation request submitted successfully. Waiting for admin approval.');
       setAllocationStatus('PENDING');
-      navigate('/resident/dashboard');
     } catch (error) {
       console.error('Error submitting flat allocation request:', error);
       toast.error('Failed to submit request. Please try again.');

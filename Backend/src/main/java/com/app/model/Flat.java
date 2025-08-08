@@ -37,6 +37,11 @@ public class Flat {
     @JoinColumn(name = "building_id", nullable = false)
     private Building building;
     
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private OccupiedStatus occupiedStatus = OccupiedStatus.VACANT;
+    
     @OneToMany(mappedBy = "flat", cascade = CascadeType.ALL)
     private Set<FlatAllocation> flatAllocations;
     

@@ -50,12 +50,6 @@ public class FlatController {
         
         List<FlatDTO> flats = flatService.getFlatsByBuildingId(buildingId);
         
-        // This logic is still complex and better handled in a service layer,
-        // but it's kept here as per the original code.
-        if (!flats.isEmpty()) {
-            // A better approach would be to check the building's societyId against the user's societyId
-        }
-        
         return ResponseEntity.ok(flats);
     }
 

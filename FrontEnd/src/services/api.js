@@ -68,19 +68,18 @@ export const buildingService = {
 // Flat services
 export const flatService = {
   // Used by AdminFlats to get flats for a specific building
-  getAllFlats: (buildingId) => api.get(`/flats/building/${buildingId}`),
-  // *** ADDED: Used by resident pages to get all flats in their society ***
+  getFlatsByBuilding: (buildingId) => api.get(`/flats/building/${buildingId}`),
   getFlatsBySociety: (societyId) => api.get(`/flats/society/${societyId}`),
   getFlatById: (id) => api.get(`/flats/${id}`),
   createFlat: (flatData) => api.post('/flats', flatData),
   updateFlat: (id, flatData) => api.put(`/flats/${id}`, flatData),
   deleteFlat: (id) => api.delete(`/flats/${id}`),
   getMyFlat: () => api.get('/flats/my-flat'),
-  requestFlatAllocation: (requestData) => api.post('/flats/allocation-requests', requestData),
+  requestFlatAllocation: (requestData) => api.post('/allocation-requests', requestData),
   // *** ADDED: Required for AdminAllocationRequests page ***
-  getAllFlatAllocationRequests: (societyId) => api.get(`/flat-allocation-requests/society/${societyId}`),
-  approveAllocationRequest: (requestId) => api.put(`/flat-allocation-requests/${requestId}/approve`),
-  rejectAllocationRequest: (requestId) => api.put(`/flat-allocation-requests/${requestId}/reject`),
+  getAllFlatAllocationRequests: (societyId) => api.get(`/allocation-requests/society/${societyId}`),
+  approveAllocationRequest: (requestId) => api.put(`/allocation-requests/${requestId}/approve`),
+  rejectAllocationRequest: (requestId) => api.put(`/allocation-requests/${requestId}/reject`),
 };
 
 // Flat member services
